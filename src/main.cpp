@@ -1,15 +1,24 @@
 #include "main.h"
 #include "lemlib/api.hpp"
+#include "lemlib/chassis.hpp"
+#include "lemlib/odom.hpp"
 
 /////
 // For installation, upgrading, documentations and tutorials, check out our website!
 // https://ez-robotics.github.io/EZ-Template/
 /////
-
+pros::Motor Catapult_1(1, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor Catapult_2(2, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Rotation horizontalEnc(15, true);
+pros::MotorGroup Catapult({Catapult, Catapult_2});
 lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_275, -3.7);
 pros::Vision::Vision ( std::uint8_t port,
                        vision_zero_e_t zero_point = E_VISION_ZERO_TOPLEFT )
+
+
+
+
+
 
 lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
                               &rightMotors, // right motor group
@@ -54,7 +63,7 @@ lemlib::OdomSensors sensors(nullptr, // vertical tracking wheel 1, set to null
 
 
 // Chassis constructor
-ez::Drive chassis (
+ez::Drive chassiss (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is used as the sensor
   {1, 2, 3}
@@ -88,12 +97,12 @@ ez::Drive chassis (
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  // Print our branding over your terminal :D
-  ez_template_print()
+  // Initialize the chassis
+
   chassis.calibrate();
   
   pros::delay(500); // Stop the user from doing anything while legacy ports configure
-
+  pros::ADIDigitalOut piston (A, B);
   // Configure your chassis controls
   chassis.opcontrol_curve_buttons_toggle(true); // Enables modifying the controller curve with buttons on the joysticks
   chassis.opcontrol_drive_activebrake_set(0.1); // Sets the active brake kP. We recommend 0.1.
@@ -120,11 +129,11 @@ void initialize() {
         lemlib::Pose pose(0, 0, 0);
         while (true) {
             // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+            pros::lcd::print(0, "X: %f", lemlib::Chassis.getPose().x); // x
+            pros::lcd::print(1, "Y: %f", lemlib::Chassis.getPose().y); // y
+            pros::lcd::print(2, "Theta: %f", lemlib::Chassis.getPose().theta); // heading
             // log position telemetry
-            lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
+            lemlib::telemetrySink()->info("Chassis pose: {}", lemlib::chassis.getPose());
             // delay to save resources
             pros::delay(50);
         }
@@ -132,7 +141,7 @@ void initialize() {
 
 
   // Initialize chassis and auton selector
-  chassis.initialize();
+  lemlib::Chassis.initialize();
   ez::as::initialize();
   master.rumble(".");
 }
@@ -177,10 +186,10 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
-  chassis.pid_targets_reset(); // Resets PID targets to 0
-  chassis.drive_imu_reset(); // Reset gyro position to 0
-  chassis.drive_sensor_reset(); // Reset drive sensors to 0
-  chassis.drive_brake_set(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency
+  chassiss.pid_targets_reset(); // Resets PID targets to 0
+  chassiss.drive_imu_reset(); // Reset gyro position to 0
+  chassiss.drive_sensor_reset(); // Reset drive sensors to 0
+  chassiss.drive_brake_set(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency
 
   ez::as::auton_selector.selected_auton_call(); // Calls selected auton from autonomous selector
 }
@@ -214,7 +223,7 @@ void opcontrol() {
       //  * use A and Y to increment / decrement the constants
       //  * use the arrow keys to navigate the constants
       if (master.get_digital_new_press(DIGITAL_X)) 
-        chassis.pid_tuner_toggle();
+        chassiss.pid_tuner_toggle();
         
       // Trigger the selected autonomous routine
       if (master.get_digital_new_press(DIGITAL_B)) 
@@ -222,9 +231,26 @@ void opcontrol() {
 
       chassis.pid_tuner_iterate(); // Allow PID Tuner to iterate
     } 
-
+  if (master.get_digital_new_press(DIGITAL_L1)) {
+    Catapult.move_velocity(200);
+    Catapult_speed = 200;
+    Catapult.move(127);
+  }
+  else {
+    Catapult.move_velocity(0);
+    Catapult_speed = 0;
+    Catapult.move(0);
+  }
+  
+  if (master.get_digital_new_press(DIGITAL_Y)) {
+    piston.setvalue(true);
+  }
+  else {
+    piston.setvalue(false);
+  }
+  
     //chassis.opcontrol_tank(); // Tank control
-    chassis.opcontrol_arcade_standard(ez::SPLIT); // Standard split arcade
+    chassiss.opcontrol_arcade_standard(ez::SPLIT); // Standard split arcade
     // chassis.opcontrol_arcade_standard(ez::SINGLE); // Standard single arcade
     // chassis.opcontrol_arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.opcontrol_arcade_flipped(ez::SINGLE); // Flipped single arcade

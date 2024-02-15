@@ -4,7 +4,8 @@
       "name": "PROS Project",
       "includePath": [
         "${workspaceFolder}/**",
-        "c:\\Users\\w1201\\Downloads\\SkillsUSA-Mamba\\include"
+        "c:\\Users\\w1201\\Downloads\\SkillsUSA-Mamba\\include",
+        "c:\\Users\\w1201\\OneDrive\\Desktop\\SkillsUSA-VEX-Mamba\\include"
       ],
       "defines": [
         "_DEBUG",
@@ -15,10 +16,10 @@
       "cStandard": "c17",
       "cppStandard": "c++17",
       "intelliSenseMode": "gcc-arm",
-      "compileCommands": "c:\\Users\\w1201\\Downloads\\SkillsUSA-Mamba\\compile_commands.json",
+      "compileCommands": "c:\\Users\\w1201\\OneDrive\\Desktop\\SkillsUSA-VEX-Mamba\\compile_commands.json",
       "browse": {
         "path": [
-          "c:\\Users\\w1201\\Downloads\\SkillsUSA-Mamba"
+          "c:\\Users\\w1201\\OneDrive\\Desktop\\SkillsUSA-VEX-Mamba"
         ],
         "limitSymbolsToIncludedHeaders": true,
         "databaseFilename": ""
