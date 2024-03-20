@@ -5,21 +5,22 @@
       "includePath": [
         "${workspaceFolder}/**",
         "c:\\Users\\w1201\\Downloads\\SkillsUSA-Mamba\\include",
-        "c:\\Users\\w1201\\OneDrive\\Desktop\\SkillsUSA-VEX-Mamba\\include"
+        "c:\\Users\\w1201\\OneDrive\\Desktop\\SkillsUSA-VEX-Mamba\\include",
+        "c:\\Users\\W1201132\\OneDrive - Katy Independent School District\\GitHub\\SkillsUSA-VEX-Mamba\\include"
       ],
       "defines": [
         "_DEBUG",
         "UNICODE",
         "_UNICODE"
       ],
-      "compilerPath": "c:\\Users\\w1201\\AppData\\Roaming\\Code\\User\\globalStorage\\sigbots.pros\\install\\pros-toolchain-windows\\usr\\bin\\arm-none-eabi-g++",
-      "cStandard": "c17",
-      "cppStandard": "c++17",
+      "compilerPath": "c:\\Users\\W1201132\\AppData\\Roaming\\Code\\User\\globalStorage\\sigbots.pros\\install\\pros-toolchain-windows\\usr\\bin\\arm-none-eabi-g++",
+      "cStandard": "gnu11",
+      "cppStandard": "gnu++20",
       "intelliSenseMode": "gcc-arm",
-      "compileCommands": "c:\\Users\\w1201\\OneDrive\\Desktop\\SkillsUSA-VEX-Mamba\\compile_commands.json",
+      "compileCommands": "c:\\Users\\W1201132\\OneDrive - Katy Independent School District\\GitHub\\SkillsUSA-VEX-Mamba\\compile_commands.json",
       "browse": {
         "path": [
-          "c:\\Users\\w1201\\OneDrive\\Desktop\\SkillsUSA-VEX-Mamba"
+          "c:\\Users\\W1201132\\OneDrive - Katy Independent School District\\GitHub\\SkillsUSA-VEX-Mamba"
         ],
         "limitSymbolsToIncludedHeaders": true,
         "databaseFilename": ""

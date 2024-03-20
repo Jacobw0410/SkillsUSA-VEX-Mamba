@@ -11,7 +11,7 @@ pros::Motor Catapult_1(1, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER
 pros::Motor Catapult_2(2, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Rotation horizontalEnc(15, true);
 pros::MotorGroup Catapult({Catapult, Catapult_2});
-lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_275, -3.7);
+
 pros::Vision::Vision ( std::uint8_t port,
                        vision_zero_e_t zero_point = E_VISION_ZERO_TOPLEFT )
 
@@ -20,50 +20,11 @@ pros::Vision::Vision ( std::uint8_t port,
 
 
 
-lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
-                              &rightMotors, // right motor group
-                              10, // 10 inch track width
-                              lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
-                              285, // drivetrain rpm is 360
-                              2 // chase power is 2. If we had traction wheels, it would have been 8
-);
 
-// lateral motion controller
-lemlib::ControllerSettings linearController(10, // proportional gain (kP)
-                                            0, // integral gain (kI)
-                                            3, // derivative gain (kD)
-                                            3, // anti windup
-                                            1, // small error range, in inches
-                                            100, // small error range timeout, in milliseconds
-                                            3, // large error range, in inches
-                                            500, // large error range timeout, in milliseconds
-                                            20 // maximum acceleration (slew)
-);
-
-// angular motion controller
-lemlib::ControllerSettings angularController(2, // proportional gain (kP)
-                                             0, // integral gain (kI)
-                                             10, // derivative gain (kD)
-                                             3, // anti windup
-                                             1, // small error range, in degrees
-                                             100, // small error range timeout, in milliseconds
-                                             3, // large error range, in degrees
-                                             500, // large error range timeout, in milliseconds
-                                             0 // maximum acceleration (slew)
-);
-
-// sensors for odometry
-// note that in this example we use internal motor encoders (IMEs), so we don't pass vertical tracking wheels
-lemlib::OdomSensors sensors(nullptr, // vertical tracking wheel 1, set to null
-                            nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
-                            &horizontal, // horizontal tracking wheel 1
-                            nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-                            &imu // inertial sensor
-);
 
 
 // Chassis constructor
-ez::Drive chassiss (
+ez::Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is used as the sensor
   {1, 2, 3}
@@ -73,7 +34,7 @@ ez::Drive chassiss (
   ,{-4, -5, -6}
 
   // IMU Port
-  ,7
+  ,8
 
   // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
   ,4
@@ -98,7 +59,7 @@ ez::Drive chassiss (
  */
 void initialize() {
   // Initialize the chassis
-
+  #define LIMIT_SWITCH 1
   chassis.calibrate();
   
   pros::delay(500); // Stop the user from doing anything while legacy ports configure
@@ -108,7 +69,7 @@ void initialize() {
   chassis.opcontrol_drive_activebrake_set(0.1); // Sets the active brake kP. We recommend 0.1.
   chassis.opcontrol_curve_default_set(0, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
   default_constants(); // Set the drive to your own constants from autons.cpp!
-
+  pinMode(LIMIT_SWITCH, INPUT);
   // These are already defaulted to these buttons, but you can change the left/right curve buttons here!
   // chassis.opcontrol_curve_buttons_left_set (pros::E_CONTROLLER_DIGITAL_LEFT, pros::E_CONTROLLER_DIGITAL_RIGHT); // If using tank, only the left side is used. 
   // chassis.opcontrol_curve_buttons_right_set(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
@@ -125,23 +86,11 @@ void initialize() {
   });
 
 
- pros::Task screenTask([&]() {
-        lemlib::Pose pose(0, 0, 0);
-        while (true) {
-            // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", lemlib::Chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", lemlib::Chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", lemlib::Chassis.getPose().theta); // heading
-            // log position telemetry
-            lemlib::telemetrySink()->info("Chassis pose: {}", lemlib::chassis.getPose());
-            // delay to save resources
-            pros::delay(50);
-        }
-      });
+
 
 
   // Initialize chassis and auton selector
-  lemlib::Chassis.initialize();
+  
   ez::as::initialize();
   master.rumble(".");
 }
@@ -186,10 +135,10 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
-  chassiss.pid_targets_reset(); // Resets PID targets to 0
-  chassiss.drive_imu_reset(); // Reset gyro position to 0
-  chassiss.drive_sensor_reset(); // Reset drive sensors to 0
-  chassiss.drive_brake_set(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency
+  chassis.pid_targets_reset(); // Resets PID targets to 0
+  chassis.drive_imu_reset(); // Reset gyro position to 0
+  chassis.drive_sensor_reset(); // Reset drive sensors to 0
+  chassis.drive_brake_set(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency
 
   ez::as::auton_selector.selected_auton_call(); // Calls selected auton from autonomous selector
 }
@@ -231,7 +180,7 @@ void opcontrol() {
 
       chassis.pid_tuner_iterate(); // Allow PID Tuner to iterate
     } 
-  if (master.get_digital_new_press(DIGITAL_L1)) {
+  /*if (master.get_digital_new_press(DIGITAL_L1)) {
     Catapult.move_velocity(200);
     Catapult_speed = 200;
     Catapult.move(127);
@@ -241,14 +190,17 @@ void opcontrol() {
     Catapult_speed = 0;
     Catapult.move(0);
   }
-  
-  if (master.get_digital_new_press(DIGITAL_Y)) {
-    piston.setvalue(true);
-  }
-  else {
+  */
+ // if (master.get_digital_new_press(DIGITAL_Y)) {
+   // piston.setvalue(true);
+  //}
+  /*else {
     piston.setvalue(false);
   }
   
+  if (digitalRead(LIMIT_SWITCH) == LOW){
+        
+    }*/
     //chassis.opcontrol_tank(); // Tank control
     chassiss.opcontrol_arcade_standard(ez::SPLIT); // Standard split arcade
     // chassis.opcontrol_arcade_standard(ez::SINGLE); // Standard single arcade
