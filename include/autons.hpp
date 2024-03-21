@@ -2,7 +2,7 @@
 
 #include "EZ-Template/drive/drive.hpp"
 
-extern Drive chassiss;
+extern Drive chassis;
 
 void drive_example();
 void turn_example();

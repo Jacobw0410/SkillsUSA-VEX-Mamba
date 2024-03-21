@@ -172,13 +172,31 @@ void opcontrol() {
       //  * use A and Y to increment / decrement the constants
       //  * use the arrow keys to navigate the constants
       if (master.get_digital_new_press(DIGITAL_X)) 
-        chassiss.pid_tuner_toggle();
+        chassis.pid_tuner_toggle();
         
       // Trigger the selected autonomous routine
       if (master.get_digital_new_press(DIGITAL_B)) 
         autonomous();
 
       chassis.pid_tuner_iterate(); // Allow PID Tuner to iterate
+
+
+      if (master.get_digital_new_press(DIGITAL_L1)) {
+        chassis.pid_turn_set(90_deg, 127, true);
+        master.rumble('......______');
+      }
+      if (master.get_digital_new_press(DIGITAL_R1)) {
+        chassis.pid_turn_set(-90_deg, 127, true);
+        master.rumble('..........................................................................................');
+      }
+      if (master.get_digital_new_press(DIGITAL_L2)) {
+        chassis.pid_swing_set(RIGHT_SWING, 127, 127, 180, true);
+        master.rumble('._._.');
+      }
+      if (master.get_digital_new_press(DIGITAL_R2)) {
+        chassis.pid_swing_set(LEFT_SWING, 127, 127, 180, true);
+        master.rumble('...');
+      }
     } 
   /*if (master.get_digital_new_press(DIGITAL_L1)) {
     Catapult.move_velocity(200);
@@ -202,7 +220,7 @@ void opcontrol() {
         
     }*/
     //chassis.opcontrol_tank(); // Tank control
-    chassiss.opcontrol_arcade_standard(ez::SPLIT); // Standard split arcade
+    chassis.opcontrol_arcade_standard(ez::SPLIT); // Standard split arcade
     // chassis.opcontrol_arcade_standard(ez::SINGLE); // Standard single arcade
     // chassis.opcontrol_arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.opcontrol_arcade_flipped(ez::SINGLE); // Flipped single arcade
