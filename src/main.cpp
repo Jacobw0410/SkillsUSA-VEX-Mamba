@@ -1,8 +1,11 @@
 #include "main.h"
+#include "globals.cpp"
+#include "autons.cpp"
+#include "pros/adi.hpp"
+#include "pros/misc.h"
+#include "pneumatics.cpp"
 
-pros::Motor Catapult_1 (18, MOTOR_GEAR_RED);
-pros::Motor Catapult_2 (15, MOTOR_GEAR_RED);
-pros::Motor_Group Catapult ({Catapult_1, Catapult_2});
+
 
  
 
@@ -44,11 +47,10 @@ void initialize() {
   // Initialize screen
 	pros::lcd::initialize();
 
-	// Drive motors
-	chassis.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	
 
 	// Motor groups
-	Catapult.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+
 	
 
 
@@ -84,7 +86,7 @@ void initialize() {
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
     
-    Auton("Auton for Programming Skills Competition", SKILLS()),
+    Auton("Auton for Programming Skills Competition", programmingSkills()),
     Auton("Calibration\n\nforFieldCalibration", forFieldCalibration()),
   });
 
@@ -195,18 +197,18 @@ void opcontrol() {
       chassis.pid_tuner_iterate(); // Allow PID Tuner to iterate
 
       if (master.get_digital(DIGITAL_R1)) {
-      catapult.move_velocity(100); // This is 100 because it's a 100rpm motor
-      catapult.set_current_limit(25000);
+      Catapult.move_velocity(100); // This is 100 because it's a 100rpm motor
+      Catapult.set_current_limit(25000);
     }
     else if (master.get_digital(DIGITAL_R2)) {
-      catapult.move_velocity(-100);
-      catapult.set_current_limit(25000);
+      Catapult.move_velocity(-100);
+      Catapult.set_current_limit(25000);
     }
     else {
-      catapult.move_velocity(0);
-      catapult.brake();
-      catapult.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-      catapult.hold();
+      Catapult.move_velocity(0);
+      Catapult.brake();
+   
+ 
     }
 
    

@@ -1,4 +1,4 @@
-bin/catapult.cpp.o: src/catapult.cpp include/main.h include/api.h \
+bin/globals.cpp.o: src/globals.cpp include/main.h include/api.h \
  include/pros/adi.h include/pros/colors.h include/pros/distance.h \
  include/pros/error.h include/pros/ext_adi.h include/pros/adi.h \
  include/pros/adi.h include/pros/gps.h include/pros/imu.h \
@@ -83,9 +83,7 @@ bin/catapult.cpp.o: src/catapult.cpp include/main.h include/api.h \
  include/okapi/api/units/QAngle.hpp include/okapi/api/units/RQuantity.hpp \
  include/okapi/api/units/QLength.hpp include/okapi/api/units/QTime.hpp \
  include/EZ-Template/piston.hpp include/EZ-Template/sdcard.hpp \
- include/autons.hpp include/okapi/impl/device/controllerUtil.hpp \
- src/globals.cpp include/pros/adi.hpp include/pros/misc.hpp \
- include/pros/motors.hpp
+ include/autons.hpp include/pros/adi.hpp include/pros/misc.hpp
 include/main.h:
 include/api.h:
 include/pros/adi.h:
@@ -254,8 +252,5 @@ include/okapi/api/units/QTime.hpp:
 include/EZ-Template/piston.hpp:
 include/EZ-Template/sdcard.hpp:
 include/autons.hpp:
-include/okapi/impl/device/controllerUtil.hpp:
-src/globals.cpp:
 include/pros/adi.hpp:
 include/pros/misc.hpp:
-include/pros/motors.hpp:

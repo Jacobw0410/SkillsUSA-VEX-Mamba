@@ -1,4 +1,8 @@
 #include "main.h"
+#include "globals.cpp"
+#include "pros/adi.hpp"
+#include "main.cpp"
+#include "pneumatics.cpp"
 
 /////
 // For installation, upgrading, documentations and tutorials, check out our website!
@@ -74,8 +78,8 @@ void fieldCalibration() {
 
 }
 
-void SKILLS() {
-  catapult.move_velocity(127);
+void programmingSkills() {
+  Catapult.move_velocity(127);
   pros::delay(35000);
 
 
