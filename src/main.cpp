@@ -41,13 +41,34 @@ ez::Drive chassis (
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  
+  // Initialize screen
+	pros::lcd::initialize();
+
+	// Drive motors
+	chassis.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+
+	// Motor groups
+	Catapult.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+	
+
+
+
+	// Pneumatics
+	wing1.set_value(0);
+	wing2.set_value(0);
+
+	// Inertial Sensor
+	imu.reset();
+	int time = pros::millis();
+  	int iter = 0;
+  	while (imu.is_calibrating()) {
+    	printf("IMU calibrating... %d\n", iter);
+    	iter += 10;
+    	pros::delay(10);
+	}
+	// Should print after about 2000 ms
+	printf("IMU is done calibrating (took %d ms)\n", iter - time);
  
-
-  
-   
-
-
   pros::delay(500); // Stop the user from doing anything while legacy ports configure
 
   // Configure your chassis controls
@@ -63,7 +84,7 @@ void initialize() {
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
     
-    Auton("", SKILLS()),
+    Auton("Auton for Programming Skills Competition", SKILLS()),
     Auton("Calibration\n\nforFieldCalibration", forFieldCalibration()),
   });
 
@@ -145,7 +166,13 @@ void opcontrol() {
   
   
   while (true) {
-    
+    //Control Catapult
+		catapultLoop();
+		resetCatapultTBH();
+		
+		// Control pneumatic wings
+		setWings();
+		pros::delay(10);
     // PID Tuner
     // After you find values that you're happy with, you'll have to set them in auton.cpp
     if (!pros::competition::is_connected()) { 

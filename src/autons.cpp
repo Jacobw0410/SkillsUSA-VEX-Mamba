@@ -85,11 +85,20 @@ void SKILLS() {
   chassis.pid_turn_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
 
+  wing1.set_value(1);
+  wing2.set_value(1);
+
   chassis.pid_swing_set(ez::RIGHT_SWING, -45_deg, SWING_SPEED, 45);
   chassis.pid_wait();
 
-  chassis.pid_turn_set(0_deg, TURN_SPEED);
+  wing1.set_value(0);
+  wing2.set_value(0);
+
+  chassis.pid_turn_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
+
+  wing1.set_value(1);
+  wing2.set_value(1);
 
   chassis.pid_drive_set(-24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
