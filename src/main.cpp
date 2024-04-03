@@ -167,25 +167,17 @@ void opcontrol() {
       }
       chassis.pid_tuner_iterate(); // Allow PID Tuner to iterate
 
-      if (master.get_digital_new_press(DIGITAL_DOWN)) {
-        Catapult.move_velocity(-1000);
-       
-
-    
-      }else {
-        Catapult_1.brake();
-        Catapult_2.brake();
-
-      }
-      if (master.get_digital_new_press(DIGITAL_UP)) {
-        Catapult.move_velocity(1000);
-     
-       
-    
-      }else {
-        Catapult_1.brake();
-        Catapult_2.brake();
-      }
+      if (master.get_digital(DIGITAL_R1)) {
+      catapult.move_velocity(100); // This is 100 because it's a 100rpm motor
+    }
+    else if (master.get_digital(DIGITAL_R2)) {
+      catapult.move_velocity(-100);
+    }
+    else {
+      catapult.move_velocity(0);
+      catapult.brake();
+      catapult.hold();
+    }
 
    
 
