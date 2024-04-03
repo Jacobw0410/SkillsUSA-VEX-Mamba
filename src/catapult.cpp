@@ -55,3 +55,14 @@ void resetCatapultTBH() {
         double tbh = 0.0;
     }
 }
+
+void runCata(int output) {
+    if(master.getdigital(ControllerDigital::L1)) {
+        Catapult.move_voltage(output);
+    }
+    else {
+        Catapult.brake();
+
+    }
+    
+}
