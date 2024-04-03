@@ -6,7 +6,7 @@
 /////
 
 // These are out of 127
-const int chassis_SPEED = 110;  
+const int DRIVE_SPEED = 110;  
 const int TURN_SPEED = 90;
 const int SWING_SPEED = 90;
 
@@ -26,66 +26,15 @@ void default_constants() {
   chassis.slew_drive_constants_set(7_in, 80);
 }
 
-
-///
-// chassis Example
-///
-void chassis_example() {
-  // The first parameter is target inches
-  // The second parameter is max speed the robot will chassis at
-  // The third parameter is a boolean (true or false) for enabling/disabling a slew at the start of chassis motions
-  // for slew, only enable it when the chassis distance is greater then the slew distance + a few inches
-
-  
-}
-
-///
-// Turn Example
-///
-void turn_example() {
-  // The first parameter is target degrees
-  // The second parameter is max speed the robot will chassis at
-
-  chassis.pid_turn_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(0_deg, TURN_SPEED);
-  chassis.pid_wait();
-}
-
-///
-// Combining Turn + chassis
-///
-void drive_and_turn() {
-  chassis.pid_drive_set(24_in, chassis_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(-45_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(0_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-24_in, chassis_SPEED, true);
-  chassis.pid_wait();
-}
-
-///
 // Wait Until and Changing Max Speed
 ///
 void wait_until_change_speed() {
   // pid_wait_until will wait until the robot gets to a desired position
 
   // When the robot gets to 6 inches, the robot will travel the remaining distance at a max speed of 30
-  chassis.pid_drive_set(24_in, chassis_SPEED, true);
+  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
   chassis.pid_wait_until(6_in);
-  chassis.pid_speed_max_set(30);  // After driving 6 inches at chassis_SPEED, the robot will go the remaining distance at 30 speed
+  chassis.pid_speed_max_set(30);  // After driving 6 inches at DRIVE_SPEED, the robot will go the remaining distance at 30 speed
   chassis.pid_wait();
 
   chassis.pid_turn_set(45_deg, TURN_SPEED);
@@ -98,39 +47,35 @@ void wait_until_change_speed() {
   chassis.pid_wait();
 
   // When the robot gets to -6 inches, the robot will travel the remaining distance at a max speed of 30
-  chassis.pid_drive_set(-24_in, chassis_SPEED, true);
+  chassis.pid_drive_set(-24_in, DRIVE_SPEED, true);
   chassis.pid_wait_until(-6_in);
-  chassis.pid_speed_max_set(30);  // After driving 6 inches at chassis_SPEED, the robot will go the remaining distance at 30 speed
+  chassis.pid_speed_max_set(30);  // After driving 6 inches at DRIVE_SPEED, the robot will go the remaining distance at 30 speed
   chassis.pid_wait();
 }
 
-///
-// Swing Example
-///
-void swing_example() {
-  // The first parameter is ez::LEFT_SWING or ez::RIGHT_SWING
-  // The second parameter is target degrees
-  // The third parameter is speed of the moving side of the chassis
-  // The fourth parameter is the speed of the still side of the chassis, this allows for wider arcs
-
-  chassis.pid_swing_set(ez::LEFT_SWING, 45_deg, SWING_SPEED, 45);
-  chassis.pid_wait();
-
-  chassis.pid_swing_set(ez::RIGHT_SWING, 0_deg, SWING_SPEED, 45);
-  chassis.pid_wait();
-
-  chassis.pid_swing_set(ez::RIGHT_SWING, 45_deg, SWING_SPEED, 45);
-  chassis.pid_wait();
-
-  chassis.pid_swing_set(ez::LEFT_SWING, 0_deg, SWING_SPEED, 45);
-  chassis.pid_wait();
-}
 
 ///
 // Auto that tests everything
 ///
-void combining_movements() {
-  chassis.pid_drive_set(24_in, chassis_SPEED, true);
+void fieldCalibration() {
+
+  //Calibrates the drive train for different field conditions and fixes the PID constants or Primative Integral and Derivative constants
+  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_turn_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+}
+
+void SKILLS() {
+  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_set(45_deg, TURN_SPEED);
@@ -142,8 +87,9 @@ void combining_movements() {
   chassis.pid_turn_set(0_deg, TURN_SPEED);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-24_in, chassis_SPEED, true);
+  chassis.pid_drive_set(-24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+
 }
 
 ///
@@ -151,7 +97,7 @@ void combining_movements() {
 ///
 void tug(int attempts) {
   for (int i = 0; i < attempts - 1; i++) {
-    // Attempt to chassis backwards
+    // Attempt to drive backwards
     printf("i - %i", i);
     chassis.pid_drive_set(-12_in, 127);
     chassis.pid_wait();
@@ -169,10 +115,10 @@ void tug(int attempts) {
   }
 }
 
-// If there is no interference, robot will chassis forward and turn 90 degrees.
-// If interfered, robot will chassis forward and then attempt to chassis backwards.
+// If there is no interference, robot will drive forward and turn 90 degrees.
+// If interfered, robot will drive forward and then attempt to drive backwards.
 void interfered_example() {
-  chassis.pid_drive_set(24_in, chassis_SPEED, true);
+  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   if (chassis.interfered) {
