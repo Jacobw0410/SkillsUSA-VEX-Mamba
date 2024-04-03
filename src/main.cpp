@@ -169,13 +169,16 @@ void opcontrol() {
 
       if (master.get_digital(DIGITAL_R1)) {
       catapult.move_velocity(100); // This is 100 because it's a 100rpm motor
+      catapult.set_current_limit(25000);
     }
     else if (master.get_digital(DIGITAL_R2)) {
       catapult.move_velocity(-100);
+      catapult.set_current_limit(25000);
     }
     else {
       catapult.move_velocity(0);
       catapult.brake();
+      catapult.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
       catapult.hold();
     }
 

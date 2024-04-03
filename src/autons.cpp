@@ -75,6 +75,10 @@ void fieldCalibration() {
 }
 
 void SKILLS() {
+  catapult.move_velocity(127);
+  pros::delay(35000);
+
+
   chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
